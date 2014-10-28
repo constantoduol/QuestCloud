@@ -1,0 +1,11 @@
+<!-- Indices written at Mon, 27 Oct 2014 21:45:27 EAT -->
+
+<datastore-indexes>
+
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="MESSAGE_OUTBOX" ancestor="false" source="auto">
+        <property name="USER_ID" direction="asc"/>
+        <property name="TIMESTAMP" direction="desc"/>
+    </datastore-index>
+
+</datastore-indexes>

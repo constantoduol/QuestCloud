@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Quest Login</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+         <link rel='shortcut icon' type='image/x-icon' href='img/favicon.ico' />
+        <link href="scripts/bootstrap.min.css" rel="stylesheet"/>
+        <link href="scripts/main.css" rel="stylesheet">
+        <script src="scripts/ui.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            function doLogin(){
+              var name=dom.el("username").value;   
+              var pass=dom.el("password").value;
+              if(name===""){
+                showInfo("error","username is required");
+                return false;
+              }
+              if(pass===""){
+                showInfo("error","password is required");
+                return false;
+              }
+              var json={
+                  request_header : {
+                     request_msg : "login"
+                  },
+                  
+                  request_object : {
+                     username : name,
+                     password : pass
+                  }
+              };
+              
+               Ajax.run({
+                  url : "/web/server",
+                  type : "post",
+                  loadArea : "index_load",
+                  data : json,
+                  error : function(err){
+                     showInfo("error","An error occurred ");
+                  },
+                  success : function(json){
+                    var resp=json.response.data;
+                    var loginResp=json.response.response;
+                    if(loginResp==="loginsuccess"){
+                        window.location="main.html";
+                        window.cookieStorage.removeItem("user");
+                        window.cookieStorage.removeItem("rand");
+                        window.cookieStorage.removeItem("privileges");
+                        window.cookieStorage.setItem("user", json.response.user);
+                        window.cookieStorage.setItem("rand", json.response.rand);
+                        window.cookieStorage.setItem("privileges", json.response.privileges);
+                   }
+                   else if(resp==="disabled"){
+                     showInfo("error","User account disabled");
+                   }
+                   else if(resp==="changepass"){
+                     showInfo("error","change password");
+                     window.location="/web/access/changePass.html?next_url=/sc/index.html";
+                   }
+                   else if(resp==="loggedin"){
+                     showInfo("error","User already logged in");
+                   }
+                   else if(resp==="maxpassattempts"){
+                     showInfo("error","Maximum password attempts reached");
+                   }
+                   else if(resp==="notexist"){
+                     showInfo("error","User account does not exist");
+                   }
+                   else if(resp==="invalidpass"){
+                     showInfo("error","Invalid login credentials");
+                   }
+                   else{
+                      if(json.response.reason){
+                        showInfo("error",json.response.reason);    
+                      }
+                      else{
+                        showInfo("error","Server is currently unavailable");  
+                      }
+                   }
+                } 
+        });      
+   }
+            
+           function showInfo(area,val){
+              document.getElementById(area).innerHTML=val;
+           }
+        </script>
+    </head>
+    <body style="padding-top: 50px">
+        <form onsubmit="doLogin(); return false;">
+           <div class="login-form" style="background: url(img/banner.png)">      
+                <h3>Login</h3>
+                <label>Username</label>
+                <input type="text" class="input-block-level" id="username" placeholder="Username"  />
+                <label>Password</label>
+                <input type="password" class="input-block-level" id="password" placeholder="Password" />
+                <label id="error" style="color : red;"></label>
+                <label id="index_load" style="display: none;"><img src="img/ajax-loader.gif"/></label>
+                <div style="clear: both"></div>
+                <footer>
+                    <a href="/web/access/changePass.html?next_url=/sc/index.html">Change Password</a>
+                    <input type="submit" class="btn btn-primary pull-right" value="Log in" />
+                    <div style="clear: both"></div>
+                </footer>
+         </div>
+      </form>  
+        <div class="footer">
+            <img src="img/qshule.png" style="width : 75px; height: 25px;">
+            <a href="" class="link">About</a>
+            <a href="" class="link">Privacy</a>
+            <a href="" class="link">Careers</a>
+            <a href="" class="link">Developers</a>
+        </div>
+    </body>
+</html>

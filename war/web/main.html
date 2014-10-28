@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+ <html lang="en">
+   <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <title>Quest Bulk SMS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="description" content="bulk sms kenya"/>
+        <meta name="author" content="constant">
+        <link rel='shortcut icon' type='image/x-icon' href='img/favicon.ico' />
+        <link href="scripts/bootstrap.min.css" rel="stylesheet">
+        <link href="scripts/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="scripts/main.css" rel="stylesheet">
+        <link type="text/css" href="scripts/jquery-ui.css" rel="stylesheet">
+        <link type="text/css" href="scripts/bootstrap-multiselect.css" rel="stylesheet">
+		<style type="text/css" media="screen">
+          
+          #main {
+              border : solid #DDD 1px; 
+           }
+           
+          #side-bar {
+             display: block;
+             overflow: auto;
+             list-style-type: disc;
+             list-style-image: none;
+             list-style-position: outside;
+             list-style-type: none;
+             white-space: nowrap;
+             float : left;
+             position : relative;
+             border : solid #DDD 2px; 
+             background: #eee;
+             -webkit-border-radius: 4px 4px 4px 4px;
+            -moz-border-radius: 4px 4px 4px 4px;
+             border-radius: 4px 4px 4px 4px;
+          }
+            
+            #menu-bar {
+              float:right;
+              border : solid #DDD 1px; 
+            }
+           
+            
+          
+            
+            .icon{
+                display: inline-block;
+                width: 25px;
+                height: 25px;
+                margin-top: 1px;
+                line-height: 25px;
+                vertical-align: text-top;
+                background-position: 25px 25px;
+                background-repeat: no-repeat;
+            }
+            
+      .menu-item a:hover {
+	     text-decoration: none;
+	     background : lightblue;
+	     color : white;
+             padding :10px;
+            -webkit-border-radius: 4px 4px 4px 4px;
+            -moz-border-radius: 4px 4px 4px 4px;
+             border-radius: 4px 4px 4px 4px;
+	   }
+            
+      .menu-item{
+              padding-top: 8px;
+              padding-bottom: 8px;
+              line-height: 20px;
+              list-style-type: none;
+              border: 1px solid transparent;
+             -webkit-border-radius: 4px 4px 0 0;
+             -moz-border-radius: 4px 4px 0 0;
+              border-radius: 4px 4px 0 0;
+         }   
+      
+      .active-menu-item{
+      	 background : lightblue;
+       }  
+       #menu-items{
+       		margin : 0 0 10px 10px
+       } 
+            #main-view {
+              float:right;
+              background: #eff
+            }
+            
+            #info{
+              background: #eee;  
+              -webkit-border-radius: 4px 4px 0 0;
+             -moz-border-radius: 4px 4px 0 0;
+              border-radius: 4px 4px 0 0;
+
+            }
+            
+            .qtable th {
+               background : #4169E1;	
+               padding : 5px;
+               color : white;
+            }
+            .qtable td {
+               background : #eee;	
+               padding : 5px;
+            }
+            
+         .modal {
+           left : 40%;
+         }
+
+
+
+
+.dropdown:focus .dropdown-menu {
+    display: block;
+}
+
+
+
+        </style>
+	
+	<script src="scripts/ui.js"></script>
+	<script src="scripts/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="scripts/jquery-ui.js"></script>
+    <script type="text/javascript" src="scripts/InternetMessageService.js"></script>
+	</head>
+        <body>
+            <div id="main">
+                <!-- The main div acting as a container for other divs -->
+                <div id="menu-bar">
+                      
+                        <div style="display:none; float : left;background: lightgray;cursor: pointer" id="show_menu">
+                            <img src="img/show_menu.png"  onclick="showSideMenu()" title="Show Menu"  style="background: #ADD8E6;"/>
+                        </div>
+                   
+                          <div style="float: right; background: lightgray;">
+                              <img src="img/qshule.png" id="logo">
+                              <a href="#" style="text-decoration: none; padding: 10px;" onclick="javascript:doLogOut();" title="Log Out" id="log_out_link">Log Out</a>
+                        </div>
+                      
+                      <!-- This is the menubar --> 
+                    <div id="info">
+                       <table>
+                          <tr>
+                            <td id="load_area" style="display:none">
+                                <label><img src='img/blue-loader.gif'></label>
+                           </td>
+                           <td>
+                             <label id="status" style="padding-left: 10px; padding-top: 5px; color : red"></label>
+                          </td>
+                        </tr>
+                     </table>
+                   </div>
+                </div>
+                <div id="side-bar">
+                      <!-- This is the sidebar -->
+                      <button onclick="javascript:hideSideMenu();" title="Hide Menu" class="close" style="background: #F00;padding: 6px;border-radius: 5px ;">&times;</button>
+                      <div >
+                        <ul id="menu-items">
+                           
+                        </ul>
+                      </div>
+                      <hr/>
+                       <div >
+                        <ul id="menu-admin-items">
+                           
+                        </ul>
+                      </div>
+                </div>
+                <div id="main-view" style="overflow : auto">
+                    <div id="main-view-form" style="padding:10px">
+                    
+                     
+                    </div>
+
+              </div>
+</div>
+      <script type="text/javascript">
+           var maxWidth;
+           var mainViewWidth;
+           var maxHeight;
+           var menuHidden=false;
+               
+     (function (){doResize();})();
+     window.onresize=function(){ doResize();}
+     function doResize() {
+        var body = window.document.body;
+	var screenHeight;
+	var screenWidth;
+        if (window.innerHeight) {
+          screenHeight = window.innerHeight;
+	  screenWidth = window.innerWidth;
+       } else if (body.parentElement.clientHeight) {
+          screenHeight = body.parentElement.clientHeight;
+	  screenWidth = body.parentElement.clientWidth;
+        } else if (body && body.clientHeight) {
+           screenHeight = body.clientHeight;
+	   screenWidth = body.clientWidth;
+        }
+        
+        var mainHeight=parseInt(screenHeight*0.96);
+        var mainWidth=parseInt(screenWidth*0.96);
+        var marginLeft=parseInt(screenWidth*0.01);
+        var marginTop=parseInt(screenHeight*0.02);
+        maxWidth=mainWidth;
+		var main=dom.el("main");
+        main.style.height=mainHeight+"px";
+        main.style.width=mainWidth+"px";
+        main.style.marginTop=marginTop+"px";
+        main.style.marginRight=marginLeft+"px";
+        main.style.marginLeft=marginLeft+"px";
+        main.style.marginBottom=marginTop+"px";
+        
+        
+        var menuBar=dom.el("menu-bar");
+        var menuHeight=parseInt(screenHeight*0.05);
+        menuBar.style.width=mainWidth+"px";
+        menuBar.style.height=menuHeight+"px";
+        
+        var logo=dom.el("logo");
+        logo.style.height=menuHeight+"px";
+        
+        var sideBar=dom.el("side-bar");
+        var sideWidth=parseInt(screenWidth*0.22);
+        sideBar.style.width=sideWidth+"px";
+        sideBar.style.height=(mainHeight-menuHeight-5)+"px";
+        mainViewWidth=screenWidth*0.96-sideWidth - 10;
+        
+        var mainView=dom.el("main-view");
+        mainView.style.height=(mainHeight-menuHeight-5)+"px";
+        maxHeight=mainHeight-menuHeight-5;
+        if(menuHidden){
+           mainView.style.width=maxWidth+"px";  
+        }
+        else{
+           mainView.style.width=mainViewWidth+"px";  
+        }
+        
+        var info=dom.el("info");
+        info.style.height=menuHeight+"px";
+        info.style.width=maxWidth+"px";
+		
+  }
+  
+  function showSideMenu(){
+	  var space=dom.el("side-bar");
+	  var mainDiv=dom.el("main-view");
+	  mainDiv.style.width=mainViewWidth+"px";
+	  space.style.display="block";
+	  var button=dom.el("show_menu");
+	  button.style.display="none";
+	  menuHidden=false;
+   }
+   
+   function hideSideMenu(){
+          var space=dom.el("side-bar");
+	  space.style.display="none";
+	  var mainDiv=dom.el("main-view");
+	  mainDiv.style.width=maxWidth+"px";
+	  var button=dom.el("show_menu");
+	  button.style.display="block";
+	  menuHidden=true;
+   }
+   
+   function Form(menu,htmlArea){
+     //draw the form and load its menus 
+      this.menu=menu;
+      this.htmlArea=htmlArea;
+      dom.el(htmlArea).innerHTML="";
+   }
+   
+   function showForm(){
+      if(this.menu){
+         this.menu.showMenu();  
+      }
+   }
+  
+    
+   function Menu(names,links,adminNames,adminLinks){
+     this.names=names;
+     this.links=links;
+     this.adminNames=adminNames;
+     this.adminLinks=adminLinks;
+   }
+   
+ 
+   
+   Menu.prototype.showMenu=showMenu;
+   Form.prototype.showForm=showForm;  
+   Form.prototype.add=add;
+   
+   function add(el){
+       if(this.htmlArea){
+         dom.el(this.htmlArea).appendChild(el); 
+      } 
+   }
+   
+   function setCurrentLink(menuItemId){
+	  $("#menu-items").find("li").removeClass("active-menu-item")
+	  $("#"+menuItemId).addClass("active-menu-item");
+   }
+   
+   function showMenu(){
+     var menuArea=dom.el("menu-items");
+     menuArea.innerHTML="";
+     if(this.names){
+     	for(var x=0; x<this.names.length; x++){
+        	var li=dom.newEl("li");
+        	li.attr("class","menu-item");
+        	var menuItemId = "menu_item_"+Math.floor(Math.random()*100000000);
+       	 	li.attr("id",menuItemId);
+        	var a=dom.newEl("a"); 
+        	a.attr("onclick",this.links[x]+";setCurrentLink('"+menuItemId+"')");
+        	a.href="#";
+        	a.innerHTML=this.names[x];
+        	li.appendChild(a);
+        	menuArea.appendChild(li);
+     	}
+     }
+    var adminMenuArea=dom.el("menu-admin-items");
+    adminMenuArea.innerHTML="";
+    if(this.adminNames){
+     for(var x=0; x<this.adminNames.length; x++){
+        var li=dom.newEl("li");
+        li.attr("class","menu-item");
+        var a=dom.newEl("a"); 
+        a.attr("onclick",this.adminLinks[x]);
+        a.href="#";
+        a.innerHTML=this.adminNames[x];
+        li.appendChild(a);
+        adminMenuArea.appendChild(li);
+     }
+    }
+   }
+   
+   function init(){
+     message.messageView();
+   }
+ 
+   
+     function doLogOut(){
+             var json={
+                 request_header : {
+                     request_msg : "logout"
+                  },
+                  
+                  request_object : {
+                     
+                  }
+              }
+              
+               Ajax.run({
+                  url : "/web/server",
+                  type : "post",
+                  data : json,
+                  loadArea : "load_area",
+                  error : function(err){
+                    setInfo("An error occurred when attempting to log out ");
+                     window.location="index.html" 
+                  },
+                  success : function(json){
+                    if(json.response.data==="success"){
+                         window.cookieStorage.removeItem("user");
+                         window.cookieStorage.removeItem("rand");
+                         window.location="index.html"; 
+                     }
+                    else{
+                     setInfo("An error occurred when attempting to log out ");    
+                  }
+                } 
+          });
+       }
+     
+   window.onload=function(){
+       var name=window.cookieStorage.getItem("user");
+       dom.el("log_out_link").innerHTML=name;
+     };
+     
+
+ 
+ 
+ 
+ function clearInfo(){
+   dom.el("status").innerHTML=""; 
+ }
+
+ function setInfo(info){
+   dom.el("status").innerHTML=info;
+   setTimeout(clearInfo,6000);  
+ }
+ 
+ function setTitle(title){
+    window.document.title=title;
+ }
+  
+ init();
+</script>
+<script type="text/javascript" src="scripts/bootstrap-dropdown.js"></script>
+<script type="text/javascript" src="scripts/bootstrap-modal.js"></script>
+<script type="text/javascript" src="scripts/bootstrap-multiselect.js"></script>
+</body>
+</html>

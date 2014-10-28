@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+ <html lang="en">
+   <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <title>Lesson 2 : Organizing Numbers</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="description" content="number game"/>
+        <meta name="author" content="constant">
+        <link rel='shortcut icon' type='image/x-icon' href='img/favicon.ico'/>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+       <!--   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script> -->
+        <script src="js/jquery-1.9.1.js" type="text/javascript"></script>
+        <script src="js/game.js" type="text/javascript"></script>
+        <script src="js/ui.js" type="text/javascript"></script>
+        <script src="js/jquery-ui.js" type="text/javascript"></script>
+       <!--  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js" type="text/javascript"></script>--> 
+        <script src="js/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
+        <script src="js/PxLoader.js" type="text/javascript"></script>
+        <script src="js/PxLoaderImage.js" type="text/javascript"></script>
+        <script src="js/PxLoaderSound.js" type="text/javascript"></script>
+        <script src="js/soundmanager2.js" type="text/javascript"></script>
+        <style>
+            #background_image {
+              height: 100%;
+            }
+            body {
+               background-repeat: no-repeat;
+               overflow: hidden;
+            }
+            #answer_area {
+               position: relative;
+               height : auto;
+               font-size: 64px;
+               font-weight: bold;
+               z-index: 1; 
+               color: green;
+               border-radius: 5px;
+               -webkit-border-radius: 5px;
+               -moz-border-radius: 5px;
+               cursor: pointer;
+               border-width: 3px;
+               background : white;
+            }
+            
+            #number_area {
+                position: relative;
+                font-size: 64px;
+                font-weight: bold;
+                color : white;
+                height : 30px;
+            }
+            
+            
+            
+            
+            
+        </style>
+      <script type="text/javascript">
+      function initSound(){
+    	// initialize the sound manager 
+    	  soundManager.url = 'soundManager2/'; 
+    	  soundManager.flashVersion = 9; 
+    	  soundManager.useHighPerformance = true; // reduces delays  
+    	  // reduce the default 1 sec delay to 500 ms 
+    	  soundManager.flashLoadTimeout = 500; 
+    	   
+    	  // mp3 is required by default, but we don't want any requirements 
+    	  soundManager.audioFormats.mp3.required = false; 
+    	   
+    	  // flash may timeout if not installed or when flashblock is installed 
+    	  soundManager.ontimeout(function(status) { 
+    	      // no flash, go with HTML5 audio 
+    	      soundManager.useHTML5Audio = true; 
+    	      soundManager.preferFlash = false; 
+    	      soundManager.reboot(); 
+    	  }); 
+    	   
+    	  soundManager.onready(function() { 
+    		  loadResources();
+    	  }); 
+      }
+      
+      function loadResources(){
+    	  var loader = new PxLoader();
+    	  var soundNames = ["arrange_below","your_turn","correct_answer","try_again"];
+          for(var x = 0 ; x < soundNames.length; x++){
+        	  var url = 'audio/' + soundNames[x] + '.aac;'; 
+        	  if(soundManager.canPlayURL(url)){
+        		  loader.addSound(soundNames[x], url);  
+        	  }
+        	  else {
+        		  url = 'audio/' + soundNames[x] + '.ogg;';
+        		  loader.addSound(soundNames[x], url);
+        	  }
+        	  
+          }
+          loader.addImage('img/background.png');
+          loader.addImage('img/endscreen.png'); 
+          loader.addImage('img/replay.png'); 
+          loader.addImage('img/celebrating.gif'); 
+          loader.addImage('img/sad.gif');
+          loader.addImage('img/smile.gif');
+          loader.addImage('img/talking.gif');
+          loader.addImage('img/waiting.gif');
+           // callback that will be run once images are ready 
+          loader.addCompletionListener(function() { 
+       	  	 game.runLater(5000,function(){
+       	  		 game.init();
+       	  	 });
+          }); 
+          loader.start();
+      }
+      
+      
+       $(document).ready(function(){
+           var width = game.getDim()[0];
+           var height = game.getDim()[1];
+           var lessonName = "Lesson 2:";
+           var lessonTitle = "Organizing Numbers";
+           var body = $("body");
+           body.css("background","url(img/background.png)");
+           body.css("background-size",""+width+"px "+height+"px");
+           body.html("<div style='top : "+height*0.4+"px;left : "+width*0.25+"px;position : relative'>"+
+           		"<div style = 'color : white;font-weight : bold; font-size: "+height*0.09+"px'>&nbsp;&nbsp;&nbsp;"+lessonName+"</div>"+
+           		"<br><br><br>"+
+           		"<div style = 'font-size : "+height*0.07+"px'>"+lessonTitle+"</div>"+
+           		"</div>");
+       });
+       initSound();
+     </script>
+    </head>
+   <body>
+    
+   </body>
+   
+   </html>
